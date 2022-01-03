@@ -21,8 +21,8 @@ public class ServerMain {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerMain.class);
 
     public void init() {
-        LOGGER.info("Iniciando servidor...");
-        // TODO: Implementar
+        LOGGER.info("INIT SERVER...");
+        server.start();
     }
 
     public static JSONObject getJson(){
@@ -51,7 +51,6 @@ public class ServerMain {
         JSONObject json = getJson();
         int port = json.getInt("port");
         port = testPort(port);
-        LOGGER.info("the port is: "+port);
 
 
         WebSocketServer server = new Server(port, new HashMap<>());
