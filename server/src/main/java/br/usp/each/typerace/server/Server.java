@@ -46,14 +46,14 @@ public class Server extends WebSocketServer {
             broadcast(message);
             message = "\nWELCOME TO THE INFINITE MONKEY'S GAME\n\n" +
                     "History:\n" +
-                    "The Infinite Monkey is a terrible and strong entity, He Capture terrestrial primates to write word\n" +
+                    "The Infinite Monkey is a terrible and strong entity, He capture terrestrial primates to write words\n" +
                     "for infinite time, your the most words right possible to prove the Infinite Monkey Theorem\n" +
-                    "Good Look, my little Possani's Padawan\n" +
-                    "Mat The Force Be With You\n\n" +
+                    "Good Lucky, my little Possani's Padawan\n" +
+                    "May The Force Be With You\n\n" +
                     "Rules:\n" +
-                    "\tSend one word at a time (Just Breathe Madeline)\n" +
+                    "\tSend one word at a time (Just Breathe, Madeline)\n" +
                     "\tDon't send the words out of order (I'll not receive for code this, so please be kind)\n" +
-                    "\tThe words can be uppercase, lowercase (camelcase, i really don't carry about)\n" +
+                    "\tThe words can be uppercase, lowercase (camelcase, i really don't care about it.)\n" +
                     "\tHave fun!! Because i've so much coding it!!!\n\n";
             conn.send(message);
         }
