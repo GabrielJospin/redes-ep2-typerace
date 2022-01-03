@@ -25,8 +25,7 @@ public class ServerMain {
         // TODO: Implementar
     }
 
-    public static void main(String[] args) {
-
+    public static JSONObject getJson(){
         File file = new File(PATH_TO_SETTINGS);
         String content = "";
 
@@ -36,10 +35,24 @@ public class ServerMain {
             e.printStackTrace();
         }
 
-        JSONObject json = new JSONObject(content);
-        int port = json.getInt("port");
+        return new JSONObject(content);
+    }
 
+    public static int testPort(int port){
+        if(port < 1 || port > 65535){
+            LOGGER.error("INVALID PORT!!\nused 8080 as port, sorry man");
+            return 8080;
+        }
+        return port;
+    }
+
+    public static void main(String[] args) {
+
+        JSONObject json = getJson();
+        int port = json.getInt("port");
+        port = testPort(port);
         LOGGER.info("the port is: "+port);
+
 
         WebSocketServer server = new Server(port, new HashMap<>());
 
