@@ -13,7 +13,7 @@ import java.util.Map;
 public class Server extends WebSocketServer {
 
     private final Map<String, WebSocket> connections;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServerMain.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
 
     public Server(int port, Map<String, WebSocket> connections) {
         super(new InetSocketAddress(port));
@@ -74,7 +74,15 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        // TODO: Implementar
+        //if(ex instanceOf ????) Possivel futuro pra aplicação
+        if(conn != null){
+            LOGGER.error(String.format("Error on connection %s", getId(conn)), ex);
+            conn.send("an error detected, please, wait");
+        }else{
+            LOGGER.error("Error on application", ex);
+            broadcast("An error detected, please, wait");
+        }
+
     }
 
     @Override
