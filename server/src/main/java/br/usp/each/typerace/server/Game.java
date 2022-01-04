@@ -44,7 +44,7 @@ public class Game {
             e.printStackTrace();
         }
 
-        return new JSONObject(content);
+        return new JSONObject(content).getJSONObject("Game");
     }
 
 
