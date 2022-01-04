@@ -52,7 +52,7 @@ public class Server extends WebSocketServer {
                     "May The Force Be With You\n\n" +
                     "Rules:\n" +
                     "\tSend one word at a time (Just Breathe, Madeline)\n" +
-                    "\tDon't send the words out of order (I'll not receive for code this, so please be kind)\n" +
+                    "\tYou can send the words out of order (DON'T PANIC!! Yoda can play this game!)\n" +
                     "\tThe words can be uppercase, lowercase (camelcase, i really don't care about it.)\n" +
                     "\t Never, ever eat the cake\n" +
                     "\tHave fun!! Because i've so much coding it!!!\n\n";
