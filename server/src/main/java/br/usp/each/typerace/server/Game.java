@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Game {
 
-    private static final String PATH_TO_SETTINGS = "./src/main/resources/serverSettings.json";
+    private static final String PATH_TO_SETTINGS = "settings.json";
 
     private final int maxScore;
     private final int maxPlayer;

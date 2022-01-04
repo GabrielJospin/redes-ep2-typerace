@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class ServerMain {
 
     private WebSocketServer server;
-    private static final String PATH_TO_SETTINGS = "./src/main/resources/serverSettings.json";
+    private static final String PATH_TO_SETTINGS = "settings.json";
 
     public ServerMain(WebSocketServer server) {
         this.server = server;
