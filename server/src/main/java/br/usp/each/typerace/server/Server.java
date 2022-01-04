@@ -54,6 +54,7 @@ public class Server extends WebSocketServer {
                     "\tSend one word at a time (Just Breathe, Madeline)\n" +
                     "\tDon't send the words out of order (I'll not receive for code this, so please be kind)\n" +
                     "\tThe words can be uppercase, lowercase (camelcase, i really don't care about it.)\n" +
+                    "\t Never, ever eat the cake\n" +
                     "\tHave fun!! Because i've so much coding it!!!\n\n";
             conn.send(message);
         }
@@ -64,7 +65,13 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        // TODO: Implementar
+        String id =getId(conn);
+        broadcast(String.format("The %s monkey is out of server, goodbye little monkey\n", id));
+        LOGGER.info(String.format("Lost connection: %s (%s)\n",
+                getId(conn), conn.getRemoteSocketAddress().getAddress().getHostAddress()));
+        connections.remove(id);
+        if(!conn.isClosed())
+            conn.close(code, reason);
     }
 
     @Override
@@ -76,18 +83,18 @@ public class Server extends WebSocketServer {
     public void onError(WebSocket conn, Exception ex) {
         //if(ex instanceOf ????) Possivel futuro pra aplicação
         if(conn != null){
-            LOGGER.error(String.format("Error on connection %s", getId(conn)), ex);
-            conn.send("an error detected, please, wait");
+            LOGGER.error(String.format("Error on connection %s\n", getId(conn)), ex);
+            conn.send("an error detected, please wait, and eat a piece of cake\n");
         }else{
-            LOGGER.error("Error on application", ex);
-            broadcast("An error detected, please, wait");
+            LOGGER.error("Error on application\n", ex);
+            broadcast("An error detected, please wait, and eat a piece of cake\n");
         }
 
     }
 
     @Override
     public void onStart() {
-        LOGGER.info("Server started");
+        LOGGER.info("Server started\n");
     }
 
     private String getId(WebSocket conn){
@@ -97,7 +104,7 @@ public class Server extends WebSocketServer {
 
     private boolean testId(WebSocket conn){
         if(connections.containsKey(getId(conn))){
-            conn.send("ID ALREADY EXIST!\nPlease, try again with another id");
+            conn.send("ID ALREADY EXIST!\nPlease, try again with another id\n");
             conn.close(400, "invalidName");
             return false;
         }
