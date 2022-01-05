@@ -1,13 +1,20 @@
 package br.usp.each.typerace.server;
 
 
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Set;
 
-public class Player implements Comparable {
+public class Player implements Comparator {
     private final String playerId;
     private int correct;
     private int wrong;
     private final Set<String> currentWords;
+
+    public Player() {
+        playerId = "";
+        currentWords = new HashSet<>();
+    }
 
     public Player(String playerId, int correct, int wrong, Set<String> currentWords) {
         this.playerId = playerId;
@@ -41,13 +48,6 @@ public class Player implements Comparable {
     }
 
 
-    @Override
-    public int compareTo(Object o) {
-        Player p = (Player) o;
-        if(this.correct == p.correct)
-            return p.wrong - this.wrong;
-        return this.correct - p.correct;
-    }
 
     public boolean checkAnswer(String answer){
         if(currentWords.contains(answer.toLowerCase())){
@@ -55,7 +55,17 @@ public class Player implements Comparable {
             currentWords.remove(answer);
             return true;
         }
-
+        wrongAnswer();
         return false;
+    }
+
+    @Override
+    public int compare(Object t1, Object o) {
+        Player t = (Player) t1;
+        Player p = (Player) o;
+
+        if(t.correct == p.correct)
+            return p.wrong - t.wrong;
+        return t.correct - p.correct;
     }
 }
