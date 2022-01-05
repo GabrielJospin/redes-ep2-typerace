@@ -1,12 +1,15 @@
 package br.usp.each.typerace.server;
 
+import com.opencsv.exceptions.CsvException;
+import org.apache.commons.logging.Log;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
+
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Map;
 
@@ -14,18 +17,29 @@ public class Server extends WebSocketServer {
 
     private final Map<String, WebSocket> connections;
     private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
+    private final Game game;
 
     public Server(int port, Map<String, WebSocket> connections) {
         super(new InetSocketAddress(port));
         this.connections = connections;
+        this.game = new Game();
     }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+
+
         LOGGER.info("New Connection");
         if(testId(conn)){
+
             LOGGER.info("An Valid Connection");
             String id = getId(conn);
+            if(!game.addPlayer(getId(conn))){
+                conn.send("The players number is above the limit, sorry, try later");
+                conn.close(500, "A lot of players connected");
+                return;
+            }
+
             this.connections.put(id,conn);
             int numConn = getNumConnections();
             String message = "";
@@ -57,6 +71,9 @@ public class Server extends WebSocketServer {
                     "\t Never, ever eat the cake\n" +
                     "\tHave fun!! Because i've so much coding it!!!\n\n";
             conn.send(message);
+        }else{
+            conn.send("Invalid id, try again");
+            conn.close(400, "Invalid id");
         }
 
     }
@@ -70,6 +87,7 @@ public class Server extends WebSocketServer {
         LOGGER.info(String.format("Lost connection: %s (%s)\n",
                 getId(conn), conn.getRemoteSocketAddress().getAddress().getHostAddress()));
         connections.remove(id);
+        game.removePlayer(id);
         if(!conn.isClosed())
             conn.close(code, reason);
     }
@@ -95,6 +113,14 @@ public class Server extends WebSocketServer {
     @Override
     public void onStart() {
         LOGGER.info("Server started\n");
+        String path = "./src/main/resources/DB/LordOfRings.csv";
+        try {
+            game.init(path);
+        } catch (IOException e) {
+            LOGGER.error("Error of IO, problaby the path is wrong: "+path+"\n"+e.getMessage()+"\n");
+        } catch (CsvException e) {
+            LOGGER.error("Error of CSV \n"+e.getMessage());
+        }
     }
 
     private String getId(WebSocket conn){

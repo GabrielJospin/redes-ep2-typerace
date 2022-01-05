@@ -25,7 +25,7 @@ public class Game {
     private final Set<String> words = new HashSet<>();
     private boolean isGameFinished;
 
-    public Game(Map<String, Player> scoreBoard) throws IOException, CsvException {
+    public Game(){
 
         JSONObject json = getJson(PATH_TO_SETTINGS);
         this.maxScore = json.getInt("maxScore");
