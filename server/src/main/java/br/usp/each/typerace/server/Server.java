@@ -1,7 +1,6 @@
 package br.usp.each.typerace.server;
 
 import com.opencsv.exceptions.CsvException;
-import org.apache.commons.logging.Log;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -11,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.Map;
 
 public class Server extends WebSocketServer {
@@ -65,11 +65,12 @@ public class Server extends WebSocketServer {
                     "Good Lucky, my little Possani's Padawan\n" +
                     "May The Force Be With You\n\n" +
                     "Rules:\n" +
-                    "\tSend one word at a time (Just Breathe, Madeline)\n" +
-                    "\tYou can send the words out of order (DON'T PANIC!! Yoda can play this game!)\n" +
-                    "\tThe words can be uppercase, lowercase (camelcase, i really don't care about it.)\n" +
-                    "\t Never, ever eat the cake\n" +
-                    "\tHave fun!! Because i've so much coding it!!!\n\n";
+                    "\t- Send one word at a time (Just Breathe, Madeline)\n" +
+                    "\t- You can send the words out of order (DON'T PANIC!! Yoda can play this game!)\n" +
+                    "\t- The words can be uppercase, lowercase (camelcase, i really don't care about it.)\n" +
+                    "\t- Never, ever eat the cake\n" +
+                    "\t- Have fun!! Because i've so much coding it!!!\n" +
+                    "To init write \"init\", and to out write \"out\" \n\n";
             conn.send(message);
         }else{
             conn.send("Invalid id, try again");
@@ -94,7 +95,45 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        // TODO: Implementar
+        if(game.getStatus().equals(Game.Status.START)){
+            if(message.equalsIgnoreCase("Init")){
+                broadcast("STARTED GAME!!");
+                broadcast("YOUR OBJECTIVE IS WRITE THE WORDS OF THIS LIST, IF YOU CAN, OF COURSE:");
+                broadcast(game.getWords().toString());
+            }else if(message.equalsIgnoreCase("Out")){
+                conn.close();
+            }else{
+                conn.send("Message Error");
+            }
+        }else{
+
+            String id = getId(conn);
+            if(game.checkAnswer(id, message)){
+                conn.send("right Answer!!");
+            }else{
+                conn.send("Wrong Answer!!");
+            }
+
+            if(game.isGameFinished()){
+                broadcast("Hello Guys, The Gane is end, let's see the result???");
+                List<Player> players = game.getPlayers();
+                broadcast("|\trank|\tname|\tCorrect|\tWrong|");
+                for(int i =0; i< players.size(); i++){
+                    Player player = players.get(i);
+                    String layer = String.format("|\t%d|\t%s|\t%d|\t%d|",
+                            i+1, player.getPlayerId(), player.getCorrect(), player.getWrong());
+                    broadcast(layer);
+                }
+                Player winner = players.get(0);
+                message = String.format("Congratulation %s you are the winner!!", winner.getPlayerId());
+                broadcast(message);
+            }else{
+                message = game.getWords().toString();
+                conn.send("That's the words remaining: ");
+                conn.send(message);
+            }
+
+        }
     }
 
     @Override

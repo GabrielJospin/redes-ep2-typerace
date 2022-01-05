@@ -6,10 +6,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +21,9 @@ public class Game {
     private final int numberOfWords;
     private final Map<String, Player> scoreBoard;
     private final Set<String> words = new HashSet<>();
-    private boolean isGameFinished;
+    private Game.Status status;
+
+    public enum Status {START, RUNNING, FINISHED }
 
     public Game(){
 
@@ -32,12 +32,13 @@ public class Game {
         this.maxPlayer = json.getInt("maxPlayer");
         this.numberOfWords = json.getInt("numberOfWords");
         this.scoreBoard = new HashMap<>();
-        this.isGameFinished = false;
+        this.status = Status.START;
     }
 
     public void init(String path) throws IOException, CsvException {
         GerateList gl = new GerateList(path, numberOfWords);
         words.addAll(gl.getList());
+        this.status = Status.RUNNING;
     }
 
     public boolean addPlayer(String id){
@@ -48,10 +49,9 @@ public class Game {
         return true;
     }
 
-    public Player removePlayer(String id){
+    public void removePlayer(String id){
         Player removed = scoreBoard.get(id);
         scoreBoard.remove(id, removed);
-        return removed;
     }
 
     public List<Player> getPlayers(){
@@ -66,7 +66,7 @@ public class Game {
     public void updateStatus(){
         scoreBoard.forEach((id, player) -> {
             if(player.getCorrect() + player.getWrong() == this.maxScore)
-                this.isGameFinished = true;
+                this.status = Status.FINISHED;
         });
     }
 
@@ -83,7 +83,15 @@ public class Game {
     }
 
     public boolean isGameFinished() {
-        return isGameFinished;
+        return status.equals(Status.FINISHED);
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Contract("_ -> new")
