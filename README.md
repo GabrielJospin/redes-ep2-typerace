@@ -11,6 +11,14 @@ Repositório para o EP2 de Redes de Computadores, EACH-USP - 2021/2
 * ~~Baidu Antivirus~~
 
 ### Rodando
+Antes de rodar o server pela primeira vez é necessário gerar o banco de palvras com:
+
+Para rodar o servidor
+```sh
+./gradlew server:buildDB
+```
+
+
 Para rodar o servidor
 ```sh
 ./gradlew server:run
