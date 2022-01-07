@@ -4,37 +4,84 @@ import org.java_websocket.client.WebSocketClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Scanner;
 
 public class ClientMain {
 
     private WebSocketClient client;
+    private final Scanner scanner = new Scanner(System.in);
+    private int port;
+    private String id;
 
     public ClientMain(WebSocketClient client) {
         this.client = client;
     }
 
     public void init(String idCliente) {
-        System.out.println("Iniciando cliente: " + idCliente);
-        // TODO: Implementar
+        System.out.println("init client: " + idCliente);
+        client.connect();
     }
 
-    public static void main(String[] args) {
+    private void configPort(){
+        System.out.println("We need tell us, what port you want connect, for default we use the port 8080");
+        String in = scanner.nextLine();
+        int temp = Integer.getInteger(in);
+        if(0 < temp && temp < 65535)
+            this.port = temp;
+        else{
+            System.out.println("Wrong port try again");
+            configPort();
+        }
+
+    }
+
+    private void configID(){
+        System.out.println("Now we need choice your ID (Without space, please), choice a nice name");
+        String id = scanner.next();
+        System.out.println();
+        if(id.isBlank() || id.equalsIgnoreCase("DanielCordeiro")){
+            System.out.println("ARE U KIDDING ME?? TRY AGAIN, PLEASE");
+            configID();
+        }else{
+            if(id.equalsIgnoreCase("ActuallyAReallyNiceId"))
+                System.out.println("OMG THAT'S ID IS VERY NICE");
+            else if(id.equalsIgnoreCase("SPIDERMAN"))
+                System.out.println("Your id is AMAZING");
+            else
+                System.out.println("You think that's nice\n... Okay, if you think\n... Let do it");
+            this.id = id;
+        }
+    }
+
+    public void main(String[] args) {
         /*
            FIXME: Remover essas strings fixas
+           //POR QUE??? ELAS TEM SENTIMENTOS SABIA!!!
+
            Como podemos fazer para que o cliente receba um parâmetro indicando a qual servidor
            ele deve se conectar e o seu ID?
         */
-        String removeMe = "ws://localhost:8080";
-        String removeMe2 = "idCliente";
+        System.out.println("Welcome to INFINITE MONKEY's game");
+        configPort();
+        configID();
+        String portURL = "ws://localhost:"+ getPort() +"/playerID="+getId();
 
         try {
-            WebSocketClient client = new Client(new URI(removeMe));
+            WebSocketClient client = new Client(new URI(portURL));
 
             ClientMain main = new ClientMain(client);
 
-            main.init(removeMe2);
+            main.init(id);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getId() {
+        return id;
     }
 }

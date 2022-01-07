@@ -164,7 +164,7 @@ public class Server extends WebSocketServer {
 
     private String getId(WebSocket conn){
         String rd = conn.getResourceDescriptor();
-        return rd.substring(rd.indexOf("player id=")+ 9);
+        return rd.substring(rd.indexOf("playerId=")+ 9);
     }
 
     private boolean testId(WebSocket conn){
