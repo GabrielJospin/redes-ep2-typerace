@@ -128,6 +128,7 @@ public class Server extends WebSocketServer {
                 Player winner = players.get(0);
                 message = String.format("Congratulation %s you are the winner!!", winner.getPlayerId());
                 sendToAll(message);
+                quitAll();
             }else{
                 message = game.getWords().toString();
                 conn.send("That's the words remaining: ");
@@ -135,6 +136,14 @@ public class Server extends WebSocketServer {
             }
 
         }
+    }
+
+    private void quitAll() {
+        this.connections.forEach((id, conn) ->{
+            conn.close();
+            LOGGER.info(id+"closed");
+        });
+
     }
 
     @Override
@@ -165,7 +174,7 @@ public class Server extends WebSocketServer {
 
     private String getId(WebSocket conn){
         String rd = conn.getResourceDescriptor();
-        return rd.substring(rd.indexOf("playerId=")+ 9);
+        return rd.substring(rd.indexOf("playerId=")+ 11);
     }
 
     private boolean testId(WebSocket conn){
