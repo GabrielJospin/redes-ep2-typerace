@@ -57,7 +57,7 @@ public class Server extends WebSocketServer {
                                 "Now, the Funniest Lobby of this game has %d participants\n\n",
                         id, id, numConn);
             }
-            broadcast(message);
+            sendToAll(message);
             message = "\nWELCOME TO THE INFINITE MONKEY'S GAME\n\n" +
                     "History:\n" +
                     "The Infinite Monkey is a terrible and strong entity, He capture terrestrial primates to write words\n" +
@@ -84,7 +84,7 @@ public class Server extends WebSocketServer {
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         String id =getId(conn);
-        broadcast(String.format("The %s monkey is out of server, goodbye little monkey\n", id));
+        sendToAll(String.format("The %s monkey is out of server, goodbye little monkey\n", id));
         LOGGER.info(String.format("Lost connection: %s (%s)\n",
                 getId(conn), conn.getRemoteSocketAddress().getAddress().getHostAddress()));
         connections.remove(id);
@@ -95,11 +95,12 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
+        System.out.println("Recive \""+message+"\""); //FIXME: REMOVER ESSE MESSAGE AI MEO
         if(game.getStatus().equals(Game.Status.START)){
             if(message.equalsIgnoreCase("Init")){
-                broadcast("STARTED GAME!!");
-                broadcast("YOUR OBJECTIVE IS WRITE THE WORDS OF THIS LIST, IF YOU CAN, OF COURSE:");
-                broadcast(game.getWords().toString());
+                sendToAll("STARTED GAME!!");
+                sendToAll("YOUR OBJECTIVE IS WRITE THE WORDS OF THIS LIST, IF YOU CAN, OF COURSE:");
+                sendToAll(game.getWords().toString());
             }else if(message.equalsIgnoreCase("Out")){
                 conn.close();
             }else{
@@ -113,20 +114,20 @@ public class Server extends WebSocketServer {
             }else{
                 conn.send("Wrong Answer!!");
             }
-
+            game.updateStatus();
             if(game.isGameFinished()){
-                broadcast("Hello Guys, The Gane is end, let's see the result???");
+                sendToAll("Hello Guys, The Gane is end, let's see the result???");
                 List<Player> players = game.getPlayers();
-                broadcast("|\trank|\tname|\tCorrect|\tWrong|");
+                sendToAll("|\trank|\tname|\tCorrect|\tWrong|");
                 for(int i =0; i< players.size(); i++){
                     Player player = players.get(i);
                     String layer = String.format("|\t%d|\t%s|\t%d|\t%d|",
                             i+1, player.getPlayerId(), player.getCorrect(), player.getWrong());
-                    broadcast(layer);
+                    sendToAll(layer);
                 }
                 Player winner = players.get(0);
                 message = String.format("Congratulation %s you are the winner!!", winner.getPlayerId());
-                broadcast(message);
+                sendToAll(message);
             }else{
                 message = game.getWords().toString();
                 conn.send("That's the words remaining: ");
@@ -144,7 +145,7 @@ public class Server extends WebSocketServer {
             conn.send("an error detected, please wait, and eat a piece of cake\n");
         }else{
             LOGGER.error("Error on application\n", ex);
-            broadcast("An error detected, please wait, and eat a piece of cake\n");
+            sendToAll("An error detected, please wait, and eat a piece of cake\n");
         }
 
     }
@@ -178,5 +179,14 @@ public class Server extends WebSocketServer {
 
     private int getNumConnections() {
         return connections.size();
+    }
+
+    private void sendToAll(String message){
+
+        this.connections.forEach((id, conn) ->{
+            conn.send(message);
+        });
+
+
     }
 }

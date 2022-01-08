@@ -58,6 +58,8 @@ public class ServerMain {
         ServerMain main = new ServerMain(server);
 
         main.init();
+
+        LOGGER.info("Server started on por: "+port);
     }
 
 }

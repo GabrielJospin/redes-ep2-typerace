@@ -38,6 +38,7 @@ public class ClientMain {
     private static String configID(){
         System.out.println("Now we need choice your ID (Without space, please), choice a nice name");
         String id = scanner.next();
+        scanner.nextLine();
         System.out.println();
         if(id.isBlank() || id.equalsIgnoreCase("DanielCordeiro")){
             System.out.println("ARE U KIDDING ME?? TRY AGAIN, PLEASE");
@@ -72,6 +73,12 @@ public class ClientMain {
             ClientMain main = new ClientMain(client);
 
             main.init(id);
+
+            while(!client.isClosed()){
+                String message =  scanner.nextLine();
+                client.send(message);
+                System.out.println(message);
+            }
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

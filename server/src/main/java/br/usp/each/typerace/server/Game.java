@@ -38,10 +38,10 @@ public class Game {
     public void init(String path) throws IOException, CsvException {
         GerateList gl = new GerateList(path, numberOfWords);
         words.addAll(gl.getList());
-        this.status = Status.RUNNING;
     }
 
     public boolean addPlayer(String id){
+        this.status = Status.RUNNING;
         if(maxPlayer == scoreBoard.size())
             return false;
         Player player = new Player(id, 0, 0, words);
@@ -55,19 +55,25 @@ public class Game {
     }
 
     public List<Player> getPlayers(){
-        List<Player> playerList = (List<Player>) scoreBoard.values();
+        List<Player> playerList = new ArrayList<Player>(scoreBoard.values());
         return playerList.stream().sorted().collect(Collectors.toList());
     }
 
     public boolean checkAnswer(String id, String answer){
-        return scoreBoard.get(id).checkAnswer(answer);
+        boolean back = scoreBoard.get(id).checkAnswer(answer);
+        updateStatus();
+        return back;
     }
 
     public void updateStatus(){
         scoreBoard.forEach((id, player) -> {
-            if(player.getCorrect() + player.getWrong() == this.maxScore)
+            System.out.print(player.getCorrect());
+            if(player.getCorrect() == numberOfWords ||
+                    player.getCorrect() + player.getWrong() == getMaxScore())
                 this.status = Status.FINISHED;
         });
+        System.out.println();
+        System.out.println(this.status.toString());
     }
 
     public int getMaxScore() {
