@@ -84,23 +84,22 @@ public class Server extends WebSocketServer {
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         String id =getId(conn);
-        sendToAll(String.format("The %s monkey is out of server, goodbye little monkey\n", id));
-        LOGGER.info(String.format("Lost connection: %s (%s)\n",
-                getId(conn), conn.getRemoteSocketAddress().getAddress().getHostAddress()));
+        LOGGER.info(String.format("Lost connection: %s \n", getId(conn)));
         connections.remove(id);
         game.removePlayer(id);
         if(!conn.isClosed())
             conn.close(code, reason);
+        sendToAll(String.format("The %s monkey is out of server, goodbye little monkey\n", id));
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        System.out.println("Recive \""+message+"\""); //FIXME: REMOVER ESSE MESSAGE AI MEO
         if(game.getStatus().equals(Game.Status.START)){
             if(message.equalsIgnoreCase("Init")){
                 sendToAll("STARTED GAME!!");
                 sendToAll("YOUR OBJECTIVE IS WRITE THE WORDS OF THIS LIST, IF YOU CAN, OF COURSE:");
                 sendToAll(game.getWords().toString());
+                game.setStatus(Game.Status.RUNNING);
             }else if(message.equalsIgnoreCase("Out")){
                 conn.close();
             }else{
@@ -153,7 +152,8 @@ public class Server extends WebSocketServer {
             LOGGER.error(String.format("Error on connection %s\n", getId(conn)), ex);
             conn.send("an error detected, please wait, and eat a piece of cake\n");
         }else{
-            LOGGER.error("Error on application\n", ex);
+
+            LOGGER.error("Error on application\n"+ex.getLocalizedMessage()+" " , ex);
             sendToAll("An error detected, please wait, and eat a piece of cake\n");
         }
 

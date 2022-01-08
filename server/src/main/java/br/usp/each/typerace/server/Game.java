@@ -41,7 +41,6 @@ public class Game {
     }
 
     public boolean addPlayer(String id){
-        this.status = Status.RUNNING;
         if(maxPlayer == scoreBoard.size())
             return false;
         Player player = new Player(id, 0, 0, words);

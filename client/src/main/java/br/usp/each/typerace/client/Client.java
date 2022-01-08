@@ -7,8 +7,11 @@ import java.net.URI;
 
 public class Client extends WebSocketClient {
 
+    boolean isClose;
+
     public Client(URI serverUri) {
         super(serverUri);
+        this.isClose = false;
     }
 
     @Override
@@ -24,6 +27,7 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
+        this.isClose = true;
         System.out.println("Closed");
         System.out.println("code: "+code);
         System.out.println(reason);

@@ -68,17 +68,18 @@ public class ClientMain {
         String portURL = "ws://localhost:"+ port +"/playerID="+id;
 
         try {
-            WebSocketClient client = new Client(new URI(portURL));
+            Client client = new Client(new URI(portURL));
 
             ClientMain main = new ClientMain(client);
 
             main.init(id);
 
-            while(!client.isClosed()){
+            while(! client.isClose){
                 String message =  scanner.nextLine();
                 client.send(message);
                 System.out.println(message);
             }
+            client.close();
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
