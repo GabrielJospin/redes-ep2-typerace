@@ -67,13 +67,10 @@ public class Game {
 
     public void updateStatus(){
         scoreBoard.forEach((id, player) -> {
-            System.out.print(player.getCorrect());
             if(player.getCorrect() == numberOfWords ||
                     player.getCorrect() + player.getWrong() == getMaxScore())
                 this.status = Status.FINISHED;
         });
-        System.out.println();
-        System.out.println(this.status.toString());
     }
 
     public int getMaxScore() {
