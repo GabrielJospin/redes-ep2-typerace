@@ -10,21 +10,36 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * This class is responsible to up the Server in the port of settings.json
+ *
+ * */
 public class ServerMain {
 
     private WebSocketServer server;
     private static final String PATH_TO_SETTINGS = "settings.json";
 
+    /**
+     * @param server: The Server to UP
+     * */
     public ServerMain(WebSocketServer server) {
         this.server = server;
     }
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerMain.class);
 
+    /**
+     * init the server
+     * */
     public void init() {
         LOGGER.info("INIT SERVER...");
         server.start();
     }
 
+    /**
+     * get the json from settings.json
+     *
+     * @return JSONObject json
+     * */
     public static JSONObject getJson(){
         File file = new File(PATH_TO_SETTINGS);
         String content = "";
@@ -38,6 +53,12 @@ public class ServerMain {
         return new JSONObject(content);
     }
 
+    /**
+     * test if the port is valid
+     *
+     * @param port: the port to use
+     * @return the port or 8080 if the port is invalid
+     * */
     public static int testPort(int port){
         if(port < 1 || port > 65535){
             LOGGER.error("INVALID PORT!!\nused 8080 as port, sorry man");
@@ -46,6 +67,9 @@ public class ServerMain {
         return port;
     }
 
+    /**
+     * run the server
+     * */
     public static void main(String[] args) {
 
         JSONObject json = getJson();

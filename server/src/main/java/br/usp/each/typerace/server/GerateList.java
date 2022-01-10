@@ -8,12 +8,22 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * gerate the list of the words
+ * */
 public class GerateList {
 
     private final String path;
     private final int numberOfWord;
     private final Set<String> list = new HashSet<>();
 
+    /**
+     *set the set of string listOfWords;
+     *
+     * @param path: Path to .csv file
+     * @param numberOfWord: number of words to read
+     *
+     */
     public GerateList(String path, int numberOfWord) throws IOException, CsvException {
         this.path = path;
         this.numberOfWord = numberOfWord;
@@ -34,14 +44,28 @@ public class GerateList {
 
     }
 
+    /**
+     * get the path
+     *
+     * @return String path
+     * */
     public String getPath() {
         return path;
     }
-
+    /**
+     * get the numberOfWords
+     *
+     * @return int numberOfWords
+     * */
     public int getNumberOfWord() {
         return numberOfWord;
     }
 
+    /**
+     * get the List
+     *
+     * @return Set of String list
+     * */
     public Set<String> getList() {
         return list;
     }

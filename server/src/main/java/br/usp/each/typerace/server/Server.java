@@ -2,6 +2,7 @@ package br.usp.each.typerace.server;
 
 import com.opencsv.exceptions.CsvException;
 import org.java_websocket.WebSocket;
+import org.java_websocket.framing.CloseFrame;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.slf4j.Logger;
@@ -10,21 +11,35 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Class to config the server extending Web Socket Server
+ * */
 public class Server extends WebSocketServer {
 
     private final Map<String, WebSocket> connections;
     private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
     private final Game game;
 
+    /**
+     * @param port: The port to up the connection
+     * @param connections: The connections with the sting of respective ID
+     * */
     public Server(int port, Map<String, WebSocket> connections) {
         super(new InetSocketAddress(port));
         this.connections = connections;
         this.game = new Game();
     }
 
+    /**
+     * Called after an opening handshake has been performed and the given websocket is ready to be
+     * written on.
+     *
+     * @param conn      The <tt>WebSocket</tt> instance this event is occurring on.
+     * @param handshake The handshake of the websocket instance
+     */
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
 
@@ -81,6 +96,15 @@ public class Server extends WebSocketServer {
 
 
 
+    /**
+     * Called after the websocket connection has been closed.
+     *
+     * @param conn   The <tt>WebSocket</tt> instance this event is occurring on.
+     * @param code   The codes can be looked up here: {@link CloseFrame}
+     * @param reason Additional information string
+     * @param remote Returns whether or not the closing of the connection was initiated by the remote
+     *               host.
+     **/
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         String id =getId(conn);
@@ -92,6 +116,13 @@ public class Server extends WebSocketServer {
         sendToAll(String.format("The %s monkey is out of server, goodbye little monkey\n", id));
     }
 
+    /**
+     * Callback for string messages received from the remote host
+     *
+     * @param conn    The <tt>WebSocket</tt> instance this event is occurring on.
+     * @param message The UTF-8 decoded message that was received.
+     * @see #onMessage(WebSocket, ByteBuffer)
+     **/
     @Override
     public void onMessage(WebSocket conn, String message) {
         if(game.getStatus().equals(Game.Status.START)){
@@ -136,7 +167,9 @@ public class Server extends WebSocketServer {
 
         }
     }
-
+    /**
+     * Quit all connections on this server
+     * */
     private void quitAll() {
         this.connections.forEach((id, conn) ->{
             conn.close();
@@ -145,6 +178,17 @@ public class Server extends WebSocketServer {
 
     }
 
+
+    /**
+     * Called when errors occurs. If an error causes the websocket connection to fail {@link
+     * #onClose(WebSocket, int, String, boolean)} will be called additionally.<br> This method will be
+     * called primarily because of IO or protocol errors.<br> If the given exception is an
+     * RuntimeException that probably means that you encountered a bug.<br>
+     *
+     * @param conn Can be null if there error does not belong to one specific websocket. For example
+     *             if the servers port could not be bound.
+     * @param ex   The exception causing this error
+     **/
     @Override
     public void onError(WebSocket conn, Exception ex) {
         //if(ex instanceOf ????) Possivel futuro pra aplicação
@@ -158,7 +202,11 @@ public class Server extends WebSocketServer {
         }
 
     }
-
+    /**
+     * Called when the server started up successfully.
+     * <p>
+     * If any error occurred, onError is called instead.
+     */
     @Override
     public void onStart() {
         LOGGER.info("Server started\n");
@@ -172,11 +220,21 @@ public class Server extends WebSocketServer {
         }
     }
 
+    /**
+     * get the id from connection
+     * @param conn: The connection
+     * @return String, the id
+     * */
     private String getId(WebSocket conn){
         String rd = conn.getResourceDescriptor();
         return rd.substring(rd.indexOf("playerId=")+ 11);
     }
 
+    /**
+     * test the id if id isn't already insert
+     * @param conn: The connection
+     * @return boolean, if is valid
+     * */
     private boolean testId(WebSocket conn){
         if(connections.containsKey(getId(conn))){
             conn.send("ID ALREADY EXIST!\nPlease, try again with another id\n");
@@ -186,10 +244,18 @@ public class Server extends WebSocketServer {
         return true;
     }
 
+    /**
+     * return the number of players connected
+     * @return int, numConnections
+     * */
     private int getNumConnections() {
         return connections.size();
     }
 
+    /**
+     * send a message to all connections
+     * @param message: the message to be sent
+     * */
     private void sendToAll(String message){
 
         this.connections.forEach((id, conn) ->{
