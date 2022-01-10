@@ -8,20 +8,28 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
+/**
+ * Class that read all words in a .pdf file and store this in a Set of Strings
+ *
+ * */
 public class ReaderPDF {
 
     private String path;
     private String fullText;
     private Set<String[]> utilDB;
 
+    /**
+     * @param path : The path to the file.pdf
+     * */
     public ReaderPDF(String path) {
         this.path = path;
         this.fullText = "";
         this.utilDB = new HashSet<>();
     }
 
-    //Responsavel por ler o PDF e convertelo em uma String
+    /**
+     * read all the pdf and store them in one only String.
+     * */
     public void gerateFullText(){
         File file = new File(path);
         try {
@@ -42,7 +50,9 @@ public class ReaderPDF {
         }
     }
 
-    //responsável por ler a String e converter em um Set
+    /**
+     * Read the string of the full text and get the words in a Set of Strings.
+     * */
     public void gerateUtilDB(){
             String[] temp = this.fullText.split("\\s");
         for(String word: temp){
@@ -57,27 +67,57 @@ public class ReaderPDF {
     }
 
 
-
+    /**
+     * Get the String of path
+     *
+     * @return String path
+     * */
     public String getPath() {
         return path;
     }
 
+    /**
+     * Set the path to a new path
+     *
+     * @param path: new path of file
+     * */
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Get the String of Full Text
+     *
+     * @return String fullText
+     * */
     public String getFullText() {
         return fullText;
     }
+
+    /**
+     * Set the Full Text to be convert in text
+     *
+     * @param fullText: new FullText
+     * */
 
     public void setFullText(String fullText) {
         this.fullText = fullText;
     }
 
+    /**
+     * Get the Set of all words
+     *
+     * @return Collection "<String[]>" path
+     * */
     public Collection<? extends String[]> getUtilDB() {
         return utilDB;
     }
 
+    /**
+     * Set the collection of String
+     *
+     * @param utilDB: new collection of String
+     * */
     public void setUtilDB(Set<String[]> utilDB) {
         this.utilDB = utilDB;
     }

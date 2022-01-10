@@ -4,11 +4,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-
+/**
+ * class to Generate Databases
+ * The objective of the class is get a pdf and write then in .csv
+ * the class use a static string to paths but this can change in a future if multiples .pdf files
+ *  */
 public class GerateDB {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GerateDB.class);
 
+    /**
+     * run the class
+     * */
     public static void main(String[] args){
 
 
