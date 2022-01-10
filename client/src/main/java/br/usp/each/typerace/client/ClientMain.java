@@ -6,20 +6,37 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Scanner;
 
+/**
+ * This class is responsible to up the client in some port
+ *
+ * */
 public class ClientMain {
 
     private WebSocketClient client;
     private static final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * @param client: the sever to be UP
+     * */
     public ClientMain(WebSocketClient client) {
         this.client = client;
     }
 
+    /** init the server
+     *
+     * @param idCliente: Id of the client
+     *
+     * */
     public void init(String idCliente) {
         System.out.println("init client: " + idCliente);
         client.connect();
     }
 
+    /**
+     * config the port with the port of the scanner <p/>
+     *<b>WARNING:</b> expect an iteration on System.in
+     *
+     * */
     private static int configPort(){
         System.out.println("We need tell us, what port you want connect, for default we use the port 8080");
         System.out.println();
@@ -34,7 +51,12 @@ public class ClientMain {
 
 
     }
-
+    /**
+     * config the ID of the user with the ID of the scanner
+     * <p/>
+     *<b>WARNING:</b> expect an iteration on System.in
+     *
+     * */
     private static String configID(){
         System.out.println("Now we need choice your ID (Without space, please), choice a nice name");
         String id = scanner.next();
@@ -54,13 +76,13 @@ public class ClientMain {
         }
     }
 
+    /**
+     * run the class
+     * */
     public static void main(String[] args) {
         /*
            FIXME: Remover essas strings fixas
-           //POR QUE??? ELAS TEM SENTIMENTOS SABIA!!!
-
-           Como podemos fazer para que o cliente receba um parâmetro indicando a qual servidor
-           ele deve se conectar e o seu ID?
+           POR QUE??? ELAS TEM SENTIMENTOS SABIA!!!
         */
         System.out.println("Welcome to INFINITE MONKEY's game");
         int port =  configPort();

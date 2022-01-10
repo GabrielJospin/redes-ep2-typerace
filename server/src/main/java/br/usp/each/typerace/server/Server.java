@@ -15,7 +15,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 /**
- * Class to config the server extending Web Socket Server
+ * Class to config the server extending {@link org.java_websocket.server.WebSocketServer}
  * */
 public class Server extends WebSocketServer {
 
