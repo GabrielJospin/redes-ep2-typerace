@@ -2,7 +2,7 @@
 Repositório para o EP2 de Redes de Computadores, EACH-USP - 2021/2
 
 # Integrantes
-* Maria Eduarda Rodrigues Garcia - 1111111
+* Maria Eduarda Rodrigues Garcia - 11796621
 * Gabriel Medeiros Jospin - 11796020
 
 ## Pré-requisitos
